@@ -1,0 +1,8 @@
+.backBtn{
+    margin-left: 450px;
+}
+@media print{
+    .backBtn, .printBtn, .sad{
+        display: none;
+    }
+}
