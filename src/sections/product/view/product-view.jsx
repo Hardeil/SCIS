@@ -51,10 +51,6 @@ export default function ProductPage(ID) {
   const { route: addRoute } = routers.product_add;
   const [product, setProduct] = useState([]);
   const router = useRouter();
-  const Id = null;
-  const addClick = () => {
-    router.push(`/${addRoute}`);
-  };
 
   useEffect(() => {
     productList();
@@ -84,32 +80,6 @@ export default function ProductPage(ID) {
       setOrderBy(id);
     }
   };
-  // const handleSelectAllClick = (event) => {
-  //   if (event.target.checked) {
-  //     const newSelecteds = supplier.map((n) => n.sup_fname);
-  //     setSelected(newSelecteds);
-  //     return;
-  //   }
-  //   setSelected([]);
-  // };
-
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1)
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
   const printRef = useRef();
   const handlePrint = useReactToPrint({ content: () => printRef.current });
   const handleChangePage = (event, newPage) => {
@@ -149,14 +119,14 @@ export default function ProductPage(ID) {
           >
             Add New Product
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             startIcon={<Iconify icon="bi:printer-fill" />}
             onClick={() => router.push(`/viewProduct`)}
           >
             View Report
-          </Button>
+          </Button> */}
         </Stack>
       </Stack>
 

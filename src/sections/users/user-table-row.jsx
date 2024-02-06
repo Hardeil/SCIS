@@ -139,7 +139,19 @@ export default function UserTableRow({ selected, handleClick, onClick, user }) {
             name="reg_status"
             onChange={handleStatusChange}
           >
-            <option value={inputs.reg_status}>{inputs.reg_status}</option>
+            <option
+              value={inputs.reg_status}
+              style={{
+                color:
+                  inputs.reg_status === 'Active'
+                    ? 'green'
+                    : inputs.reg_status === 'Inactive'
+                    ? 'red'
+                    : '',
+              }}
+            >
+              {inputs.reg_status}
+            </option>
             {inputs.reg_status !== 'Inactive' && (
               <option style={{ color: 'red' }} value="Inactive">
                 Inactive

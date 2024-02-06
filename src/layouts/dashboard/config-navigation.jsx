@@ -45,6 +45,12 @@ const navConfig = [
     icon: icon('ic_user'),
     role: ['Admin'],
   },
+  {
+    title: 'Reports',
+    path: '/purchaseReports',
+    icon: icon('ic_cart'),
+    role: ['Admin', 'Staff'],
+  },
   // {
   //   title: 'profile',
   //   path: 'profile',

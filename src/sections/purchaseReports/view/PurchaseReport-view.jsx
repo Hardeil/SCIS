@@ -3,6 +3,7 @@
 import axios from 'axios';
 // import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { useReactToPrint } from 'react-to-print';
 import { useRef, useState, useEffect } from 'react';
 
@@ -10,6 +11,7 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
+import { TableCell } from '@mui/material';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -28,14 +30,14 @@ import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
 import TableEmptyRows from '../table-empty-rows';
-import PurchaseTableRow from '../Purchase-table-row';
-import PurchaseTableHead from '../Purchase-table-head';
-import PurchaseTableToolbar from '../Purchase-table-toolbar';
+import PurchaseTableRow from '../PurchaseReport-table-row';
+import PurchaseTableHead from '../PurchaseReport-table-head';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+import PurchaseTableToolbar from '../PurchaseReport-table-toolbar';
 
 // ----------------------------------------------------------------------
 
-export default function PurchasePage({ userId, userRole }) {
+export default function PurchaseReportPage() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -55,32 +57,26 @@ export default function PurchasePage({ userId, userRole }) {
   const route = useRouter();
 
   const routeClick = () => {
-    route.push(`${addPurchaseRoute}/${userId}`);
+    route.push(``);
   };
 
   useEffect(() => {
     purchaseList();
-    console.log('purchase:', userId);
-    console.log('purchase:', userRole);
+    // console.log('purchase:', userId);
+    // console.log('purchase:', userRole);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function purchaseList() {
-    const apiUrl = `${apiPurchaseViewUrl}?reg_ID=${userId}&reg_role=${userRole}`;
+    // const apiUrl = `${apiPurchaseViewUrl}?reg_ID=${userId}&reg_role=${userRole}`;
+    const apiUrl = `http://localhost/xampp/back_end/purchaseViewReports.php`;
     axios.get(apiUrl).then((response) => {
       console.log(response.data);
       setPurchase(response.data);
       console.log(purchase);
     });
   }
-  const deleteClick = (id) => {
-    const apiUrl = `${apiPurchaseDelete}?id=${id}`;
-    axios.delete(apiUrl).then((response) => {
-      console.log(response.data);
-      purchaseList();
-    });
-    console.log({ id });
-  };
+
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
@@ -88,6 +84,8 @@ export default function PurchasePage({ userId, userRole }) {
       setOrderBy(id);
     }
   };
+  const printRef = useRef();
+  const handlePrint = useReactToPrint({ content: () => printRef.current });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -113,27 +111,46 @@ export default function PurchasePage({ userId, userRole }) {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">{purchaseTitle}</Typography>
+        <Typography variant="h1">Reports</Typography>
         <Stack direction="row" spacing={2}>
           <Button
-            onClick={routeClick}
             variant="contained"
-            color="inherit"
-            startIcon={<Iconify icon="eva:plus-fill" />}
+            color="primary"
+            startIcon={<Iconify icon="bi:printer-fill" />}
+            onClick={handlePrint}
           >
-            Add Purchase Order Details
+            Print
           </Button>
         </Stack>
       </Stack>
 
       <Card>
+        <Stack direction="row" justifyContent="left" mb={3}>
+          <Button
+            component={Link}
+            to="/purchaseReports"
+            variant="outlined"
+            sx={{ color: 'black', border: 'none', borderBottom: '1px solid black' }}
+          >
+            Purchase
+          </Button>
+          <Button
+            component={Link}
+            to="/productReports"
+            variant="outlined"
+            sx={{ color: 'black', border: 'none', borderBottom: '1px solid black' }}
+          >
+            Product
+          </Button>
+        </Stack>
         <PurchaseTableToolbar
           // numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
         />
         <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
+          <TableContainer ref={printRef} sx={{ overflow: 'unset' }}>
+            <h2 style={{ padding: '10px' }}>Purchase Reports</h2>
             <Table sx={{ minWidth: 800 }}>
               <PurchaseTableHead
                 hideCheckbox={false}
@@ -147,11 +164,11 @@ export default function PurchasePage({ userId, userRole }) {
                   { id: 'purchase_id', label: 'ID' },
                   { id: 'reg_Fname', label: 'Name' },
                   { id: 'prod_name', label: 'Product Name' },
-                  { id: 'purchase_quantity', label: 'Ordered Quantity' },
                   { id: 'sup_fname', label: 'Supplier Name  ' },
                   { id: 'purchase_order_date', label: 'Order Date' },
                   { id: 'ipurchase_status', label: 'Order Status' },
                   { id: 'purchase_delivered_date', label: 'Delivered Date' },
+                  { id: 'purchase_quantity', label: 'Ordered Quantity' },
                   { id: '' },
                 ]}
               />
@@ -162,12 +179,9 @@ export default function PurchasePage({ userId, userRole }) {
                     purchase={obj}
                     hideCheckBox={false}
                     // handleClick={(event) => handleClick(event, obj.name)}
-                    deleteClick={() => {
-                      deleteClick(obj.purchase_id);
-                    }}
                   />
                 ))}
-
+                {/* <TableCell>sad</TableCell> */}
                 <TableEmptyRows
                   height={77}
                   emptyRows={emptyRows(page, rowsPerPage, users.length)}
@@ -191,7 +205,7 @@ export default function PurchasePage({ userId, userRole }) {
     </Container>
   );
 }
-PurchasePage.propTypes = {
-  userId: PropTypes.any,
-  userRole: PropTypes.any,
-};
+// PurchasePage.propTypes = {
+//   userId: PropTypes.any,
+//   userRole: PropTypes.any,
+// };

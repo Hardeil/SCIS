@@ -32,13 +32,16 @@ export default function AppView() {
   const [totalPurchase, setTotalPurchase] = useState(0);
   const [totalPurchaseItem, setTotalPurchaseItem] = useState(0);
   const [totalProduct, setTotalProduct] = useState(0);
-  const [purchase, setPurchase] = useState([]);
-  const [release, setRelease] = useState([]);
+  const [totalActiveUser, setTotalActiveUser] = useState(0);
+  const [totalInactiveUser, setTotalInactiveUser] = useState(0);
+  // const [purchase, setPurchase] = useState([]);
+  // const [release, setRelease] = useState([]);
 
   useEffect(() => {
-    purchaseList();
+    // purchaseList();
+    // releaseList();
     totalInventory();
-    releaseList();
+
     const currentDate = new Date();
     const formattedDateTime = `${currentDate.getFullYear()}-${
       currentDate.getMonth() + 1
@@ -46,19 +49,19 @@ export default function AppView() {
     console.log('Current Date and Time:', formattedDateTime);
   }, []);
 
-  function purchaseList() {
-    const apiUrl = 'http://localhost/xampp/back_end/purchaseViewRecieved.php';
-    axios.get(apiUrl).then((response) => {
-      setPurchase(response?.data);
-    });
-  }
+  // function purchaseList() {
+  //   const apiUrl = 'http://localhost/xampp/back_end/purchaseViewRecieved.php';
+  //   axios.get(apiUrl).then((response) => {
+  //     setPurchase(response?.data);
+  //   });
+  // }
 
-  function releaseList() {
-    const apiUrl = 'http://localhost/xampp/back_end/releaseViewRecent.php';
-    axios.get(apiUrl).then((response) => {
-      setRelease(response?.data);
-    });
-  }
+  // function releaseList() {
+  //   const apiUrl = 'http://localhost/xampp/back_end/releaseViewRecent.php';
+  //   axios.get(apiUrl).then((response) => {
+  //     setRelease(response?.data);
+  //   });
+  // }
 
   const totalInventory = () => {
     const apiUrl = 'http://localhost/xampp/back_end/inventoryTotalItem.php';
@@ -72,6 +75,8 @@ export default function AppView() {
         setTotalPurchaseItem(data.purchase?.total_pQuantity);
         setTotalProduct(data.product?.total_product);
         setTotalInventoryItem(data.product?.total_quantity);
+        setTotalInactiveUser(data.user?.total_inactive);
+        setTotalActiveUser(data.user?.total_active);
       }
     });
   };
@@ -127,7 +132,22 @@ export default function AppView() {
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
         </Grid>
-
+        <Grid xs={12} sm={6} md={4}>
+          <AppWidgetSummary
+            title="Active Users"
+            total={totalActiveUser}
+            color="info"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+          />
+        </Grid>
+        <Grid xs={12} sm={6} md={4}>
+          <AppWidgetSummary
+            title="Inactive Users"
+            total={totalInactiveUser}
+            color="info"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+          />
+        </Grid>
         {/* <Grid xs={12} md={6} lg={4}>
           <AppOrderTimeline
             title="Order Timeline"

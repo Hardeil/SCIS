@@ -90,18 +90,21 @@ export default function SupplierFormView({ state }) {
           label="First Name"
           onChange={handleChange}
           value={TextFields.sup_fname || ''}
+          required
         />
         <TextField
           name="sup_lname"
           label="Last Name"
           onChange={handleChange}
           value={TextFields.sup_lname || ''}
+          required
         />
         <TextField
           name="sup_gender"
           label="Gender"
           onChange={handleChange}
           value={TextFields.sup_gender || ''}
+          required
         />
         <TextField
           name="sup_contactNo"
@@ -109,12 +112,14 @@ export default function SupplierFormView({ state }) {
           type="number"
           onChange={handleChange}
           value={TextFields.sup_contactNo || ''}
+          required
         />
         <TextField
           name="sup_company"
           label="Company"
           onChange={handleChange}
           value={TextFields.sup_company || ''}
+          required
         />
         {/* <TextField
           name="sup_date"
@@ -123,7 +128,7 @@ export default function SupplierFormView({ state }) {
           value={TextFields.sup_date}
         /> */}
 
-        <span id="error"> sada</span>
+        <span id="error"> </span>
       </Stack>
 
       <LoadingButton

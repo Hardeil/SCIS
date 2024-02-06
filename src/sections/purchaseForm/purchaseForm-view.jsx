@@ -1,3 +1,6 @@
+/* eslint-disable no-lone-blocks */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-return-assign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-constant-condition */
@@ -202,6 +205,9 @@ export default function PurchaseFormView({ state }) {
     if (state === 'edit') {
       try {
         const apiUrl = `${apiEditPurchaseUrl}?purchase_id=${purchase_id}&reg_ID=${reg_ID}&prod_id=${prod_id}&sup_id${sup_id}`;
+        {
+          inputs.purchase_status === 'received' ? (inputs.purchase_status = 'Recieved') : '';
+        }
         const response = await axios.post(apiUrl, JSON.stringify(inputs), {
           headers: {
             'Content-Type': 'application/json',
@@ -234,17 +240,45 @@ export default function PurchaseFormView({ state }) {
     setAdded(false);
   };
   const calculateQuantity = () => {
+    if (inputs.purchase_status === 'received') {
+      inputs.prod_quantity = currentQuantity + inputs.purchase_quantity;
+    }
     if (inputs.purchase_status === 'Received') {
       return inputs.purchase_quantity > currentRecieveQuantity
-        ? prevQuantity + (inputs.purchase_quantity - currentRecieveQuantity)
+        ? (inputs.prod_quantity =
+            prevQuantity + (inputs.purchase_quantity - currentRecieveQuantity))
         : inputs.purchase_quantity < currentRecieveQuantity
-        ? prevQuantity - (currentRecieveQuantity - inputs.purchase_quantity)
+        ? (inputs.prod_quantity =
+            prevQuantity - (currentRecieveQuantity - inputs.purchase_quantity))
         : inputs.purchase_quantity === 0 || inputs.purchase_quantity === ''
-        ? currentQuantity
-        : currentQuantity + inputs.purchase_quantity;
+        ? inputs.prod_quantity
+        : inputs.prod_quantity;
     }
     return inputs.prod_quantity;
   };
+  // const calculateQuantity = () => {
+  //   let updatedQuantity = false; // Flag to track if quantity has been updated
+
+  //   if (inputs.purchase_status === 'Received') {
+  //     if (inputs.purchase_quantity > currentRecieveQuantity) {
+  //       inputs.prod_quantity = prevQuantity + (inputs.purchase_quantity - currentRecieveQuantity);
+  //       updatedQuantity = true; // Set flag to true after updating quantity
+  //     } else if (inputs.purchase_quantity < currentRecieveQuantity) {
+  //       inputs.prod_quantity = prevQuantity - (currentRecieveQuantity - inputs.purchase_quantity);
+  //       updatedQuantity = true; // Set flag to true after updating quantity
+  //     } else if (inputs.purchase_quantity === 0 || inputs.purchase_quantity === '') {
+  //       inputs.prod_quantity = currentQuantity;
+  //       updatedQuantity = true; // Set flag to true after updating quantity
+  //     }
+  //   }
+
+  //   // If quantity has not been updated yet and purchase status is 'Received'
+  //   if (!updatedQuantity && inputs.purchase_status === 'Received') {
+  //     inputs.prod_quantity = currentQuantity + inputs.purchase_quantity;
+  //   }
+
+  //   return inputs.prod_quantity;
+  // };
   if (loading) return <div>Loading...</div>;
 
   const renderForm = (
@@ -266,22 +300,6 @@ export default function PurchaseFormView({ state }) {
             </option>
           </select>
 
-          {/* <Input
-            value={inputs.reg_contact || ''}
-            name="reg_contact"
-            placeholder="Contact No."
-            onChange={handleChange}
-            disabled
-          />
-          <Label>Address:</Label>
-          <Input
-            value={inputs.reg_address || ''}
-            name="reg_address"
-            placeholder="Address"
-            type="text"
-            onChange={handleChange}
-            disabled
-          /> */}
           <h2>Product:</h2>
           <Label>Product Name:</Label>
 
@@ -303,7 +321,7 @@ export default function PurchaseFormView({ state }) {
           ) : (
             <select
               value={inputs.prod_id}
-              style={{ padding: '10px' }}
+              style={{ padding: '10px', border: 'solid 1px black', color: 'black' }}
               name="prod_id"
               onChange={handleProductChange}
               disabled
@@ -322,12 +340,13 @@ export default function PurchaseFormView({ state }) {
         <Stack spacing={3} marginLeft={4}>
           {inputs.purchase_status === 'Received' ? (
             state === 'edit' ? (
-              <Input
+              <input
                 value={calculateQuantity()}
                 type="number"
                 name="prod_quantity"
                 placeholder="Item Quantity"
                 onChange={handleChange}
+                hidden
               />
             ) : (
               ''
@@ -420,7 +439,7 @@ export default function PurchaseFormView({ state }) {
 
               {inputs.purchase_status === 'Received' ? (
                 <select
-                  style={{ padding: '10px' }}
+                  style={{ padding: '10px', border: 'solid 1px black', color: 'black' }}
                   name="purchase_status"
                   value={selectedStatus}
                   onChange={handleStatusChange}
@@ -428,8 +447,8 @@ export default function PurchaseFormView({ state }) {
                 >
                   <option value={inputs.purchase_status}>{inputs.purchase_status}</option>
                   {inputs.purchase_status !== 'Pending' && <option value="Pending">Pending</option>}
-                  {inputs.purchase_status !== 'Received' && (
-                    <option value="Received">Received</option>
+                  {inputs.purchase_status !== 'received' && (
+                    <option value="received">Received</option>
                   )}
                   {inputs.purchase_status !== 'Cancelled' && (
                     <option value="Cancelled">Cancelled</option>

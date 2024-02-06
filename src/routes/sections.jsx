@@ -30,6 +30,8 @@ export const AssetFormPage = lazy(() => import('src/pages/assetForm'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
 export const ViewProductPage = lazy(() => import('src/pages/viewProduct'));
+export const PurchaseReportsPage = lazy(() => import('src/pages/purchaseReports'));
+export const ProductReportsPage = lazy(() => import('src/pages/productReports'));
 // ----------------------------------------------------------------------
 export default function Router() {
   const [userId, setUserId] = useState(
@@ -122,6 +124,14 @@ export default function Router() {
         {
           path: `profile`,
           element: <ProfilePage userId={userId} />,
+        },
+        {
+          path: `purchaseReports`,
+          element: <PurchaseReportsPage />,
+        },
+        {
+          path: `productReports`,
+          element: <ProductReportsPage />,
         },
       ],
     },
